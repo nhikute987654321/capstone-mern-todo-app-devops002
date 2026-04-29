@@ -1,0 +1,27 @@
+groups:
+  - name: Node Exporter Alerts
+    rules:
+      - alert: AlwaysFiringTest
+        expr: vector(1)
+        for: 5s
+        annotations:
+          summary: "Test Alert"
+          description: "Đây là cảnh báo test gửi từ Prometheus"
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 15
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU usage is above 15% on {{ $labels.instance }}"
+          description: "High CPU usage detected."
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memory usage is above 80% on {{ $labels.instance }}"
+          description: "High Memory usage detected."
