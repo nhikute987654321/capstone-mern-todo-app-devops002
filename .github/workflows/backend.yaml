@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'    
+
+permissions:
+  contents: read
+
+jobs:
+  job_1:
+    runs-on: ubuntu-latest
+    outputs:
+      data: ${{ steps.step_id.outputs.data_in1 }}
+    steps:
+      - id: step_id
+        run: echo "data_in1=1" >> $GITHUB_OUTPUT
+
+  job_2:
+    runs-on: ubuntu-latest
+    needs: [job_1]
+    outputs:
+      data: ${{ steps.step_id.outputs.data_in2 }}
+    steps:
+      - id: step_id
+        run: echo "data_in2=2" >> $GITHUB_OUTPUT
+
+  job_3:
+    runs-on: ubuntu-latest
+    needs: [job_1, job_2]
+    steps:
+      - name: Check & Send Email
+        if: ${{ needs.job_1.outputs.data == '1' && needs.job_2.outputs.data == '2' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Backend API result for product ${{ needs.job_1.outputs.data }} (200)"
+          body: "Backend API trả về status 200."
+          to: nhikute987654321@gmail.com
+          from: nhikute987654321@gmail.com
