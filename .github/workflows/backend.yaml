@@ -42,7 +42,7 @@ jobs:
           server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Backend API result for product ${{ needs.job_1.outputs.data }} (200)"
+          subject: "Backend Commit: ${{ github.event.head_commit.message }} (200)"
           body: "Backend API trả về status 200."
           to: nhikute987654321@gmail.com
           from: nhikute987654321@gmail.com
