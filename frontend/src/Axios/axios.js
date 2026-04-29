@@ -1,5 +1,5 @@
 import axios from "axios"
 const instance = axios.create({
-   baseURL:"http://node.techdigital.online/api"
+   baseURL:"https://node.techdigital.online/api"
 })
 export default instance
