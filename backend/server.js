@@ -34,4 +34,4 @@ app.use("/api/task", taskRouter)
 app.use("/api/forgotPassword", forgotPasswordRouter)
 
 //listen
-app.listen(port, () => console.log(`Listening on localhost:${port}`))
+app.listen(port, () => console.log(`Listening on PORT:${port}`))
