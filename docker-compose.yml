@@ -1,0 +1,68 @@
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+    networks:
+      - backend_network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_app
+    ports:
+      - "3001:3001"
+    depends_on:
+      - backend
+    networks:
+      - frontend_network
+      - backend_network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    container_name: mongo_db
+    ports:
+    - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend_network
+    restart: unless-stopped
+  
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"   # Jenkins web UI
+      - "50000:50000" # Jenkins agent communication
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    restart: unless-stopped
+
+  nginx:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped 
+    ports:
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+      - '81:81' # Admin Web Port
+    environment:
+      TZ: "Australia/Brisbane"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
+volumes:
+  mongo_data:
+  jenkins_home:
+
+networks:
+  backend_network:
+    driver: bridge
+  frontend_network:
+    driver: bridge

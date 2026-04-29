@@ -30,6 +30,7 @@ const loginUser = async (req,res) => {
         const token = createToken(user._id)
         res.status(200).json({user,token})
     } catch (error) {
+        console.log('Logs loginUser:', error.message);
         res.status(500).json({message: error.message})
     }
 }
@@ -61,6 +62,7 @@ const registerUser = async (req,res) => {
         res.status(200).json({user,token})
 
     } catch(error){
+        console.log('Logs registerUser:', error.message);
         res.status(500).json({message: error.message})
     }
 }
